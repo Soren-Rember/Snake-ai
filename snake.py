@@ -15,6 +15,20 @@ class Direction(Enum):
 class Snake:
     def __init__(self) -> None:
         self.direction = Direction.UP
+        self.dead = False
+
+    @property
+    def position(self):
+        return self.position
+    
+    @position.setter
+    def position(self, pos:tuple[int, int]):
+        y, x = pos
+        if y > 0 and y < self.board_size:
+            if x > 0 and x < self.board_size:
+                self.position = (y, x)
+        else:
+            self.dead = True
 
     def parse_settings(self):
         with open("settings.txt", "r") as settings:
@@ -46,13 +60,16 @@ class Snake:
         """Main loop"""
         running = True
         while running:
-            time.sleep(0.75)
-            self.position = (self.position[0] + self.direction.value[0], self.position[1] + self.direction.value[1])
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_UP]:
+                self.position = (self.position[0] + self.direction.value[0], self.position[1] + self.direction.value[1])
             print(self)
+            time.sleep(0.75)
             
 
 
 def main():
+    pygame.init()
     game = Snake()
     game.parse_settings()
     game.init_game()
