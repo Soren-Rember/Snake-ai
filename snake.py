@@ -14,19 +14,20 @@ class Direction(Enum):
 
 class Snake:
     def __init__(self) -> None:
-        self.direction = Direction.UP
-        self.dead = False
+        self.__direction = Direction.UP
+        self.__dead = False
+        self.__position = (0, 0)
 
     @property
     def position(self):
-        return self.position
+        return self.__position
     
     @position.setter
     def position(self, pos:tuple[int, int]):
         y, x = pos
         if y > 0 and y < self.board_size:
             if x > 0 and x < self.board_size:
-                self.position = (y, x)
+                self.__position = (y, x)
         else:
             self.dead = True
 
@@ -61,11 +62,22 @@ class Snake:
         running = True
         while running:
             keys = pygame.key.get_pressed()
-            if keys[pygame.K_UP]:
-                self.position = (self.position[0] + self.direction.value[0], self.position[1] + self.direction.value[1])
+            if keys[pygame.K_z]:
+                self.move(Direction.UP)
+            elif keys[pygame.K_s]:
+                self.move(Direction.DOWN)
+            elif keys[pygame.K_q]:
+                self.move(Direction.LEFT)
+            elif keys[pygame.K_d]:
+                self.move(Direction.RIGHT)
+
             print(self)
             time.sleep(0.75)
             
+    def move(self, dir: Direction):
+        y, x = dir.value
+        print("moving")
+        self.position = (self.position[0] + y, self.position[1] + x)
 
 
 def main():
