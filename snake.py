@@ -28,13 +28,17 @@ class Snake:
         y, x = self.position
 
         self.board = [[0] * self.board_size for _ in range(self.board_size)]
-        self.board[y][x] = 1
+        self.state = {"board" : self.board, "pos" : self.position}
+        
 
     def __str__(self):
         board_str = ''
         for y in range(self.board_size):
             for x in range(self.board_size):
-                board_str += str(self.board[y][x])
+                if (y, x) == self.position:
+                    board_str += "1"
+                else:
+                    board_str += str(self.board[y][x])
             board_str += '\n'
         return board_str
 
@@ -43,6 +47,7 @@ class Snake:
         running = True
         while running:
             time.sleep(0.75)
+            self.position = (self.position[0] + self.direction.value[0], self.position[1] + self.direction.value[1])
             print(self)
             
 
