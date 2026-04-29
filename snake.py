@@ -13,28 +13,44 @@ class Direction(Enum):
 
 
 class Snake:
-    def __init__(self, board_size) -> None:
-        self.board = [[0] * board_size for _ in range(board_size)]
+    def __init__(self) -> None:
         self.direction = Direction.UP
-        self.position = 
 
     def parse_settings(self):
         with open("settings.txt", "r") as settings:
             lines = settings.readlines()
         self.board_size = int(lines[0])
-        self.position = int(lines[1])
+
+        y, x = lines[1].split(',')
+        self.position = (int(y), int(x))
+
+    def init_game(self):
+        y, x = self.position
+
+        self.board = [[0] * self.board_size for _ in range(self.board_size)]
+        self.board[y][x] = 1
+
+    def __str__(self):
+        board_str = ''
+        for y in range(self.board_size):
+            for x in range(self.board_size):
+                board_str += str(self.board[y][x])
+            board_str += '\n'
+        return board_str
 
     def run(self):
         """Main loop"""
         running = True
         while running:
             time.sleep(0.75)
-            print("fiouf")
+            print(self)
             
 
 
 def main():
-    game = Snake(9)
+    game = Snake()
+    game.parse_settings()
+    game.init_game()
     game.run()
 
 
