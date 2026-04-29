@@ -1,4 +1,8 @@
 import pygame
+SCREEN_WIDTH = 1280
+SCREEN_HEIGHT = 720
+
+
 
 class Snake:
     def __init__(self, board_size) -> None:
@@ -8,29 +12,13 @@ class Snake:
         """Main loop"""
         running = True
         while running:
-            for event in self.events:
-                if event.type == pygame.QUIT:
-                    running = False
-
-    @property
-    def events(self):
-        return pygame.event.get()
+            pass
 
 
 def main():
-    pygame.init()
-    screen = pygame.display.set_mode((1280, 720))
-    clock = pygame.time.Clock()
+    game = Snake(9)
+    game.run()
 
-    screen.fill("purple")
-
-    # Render the game
-
-    pygame.display.flip()
-
-    clock.tick(60)
-
-    pygame.quit()
 
 if __name__ == "__main__":
     main()
