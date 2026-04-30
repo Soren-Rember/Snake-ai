@@ -3,14 +3,18 @@ import time
 
 from direction import Direction
 from head import Head
-SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+SCREEN_WIDTH = 800
+SCREEN_HEIGHT = 800
 
 # Class for the game
 class Snake:
     def __init__(self) -> None:
         self.__state = dict()
         self.__snake: list[Head] = []
+
+        #Pygame init
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
+        self.clock = pygame.time.Clock()
 
     def parse_settings(self):
         with open("settings.txt", "r") as settings:
@@ -26,18 +30,23 @@ class Snake:
     def head(self):
         return self.__snake[0]
 
-    def __str__(self):
-        board_str = ''
+    def draw_background(self):
+        width = SCREEN_WIDTH//self.board_size
+        height = SCREEN_HEIGHT//self.board_size
+        checker_pattern = 0
         for y in range(self.board_size):
             for x in range(self.board_size):
-                if (y, x) == self.head.pos:
-                    board_str += "1"
-                elif (y, x) == self.__apple:
-                    board_str += "2"
+                square = pygame.Rect()
+                square.topleft = (x*width, y*height)
+                square.height = height
+                square.width = width
+                if x % 2 == checker_pattern % 2:
+                    color = "chartreuse3"
                 else:
-                    board_str += "0"
-            board_str += '\n'
-        return board_str
+                    color = "chartreuse2"
+                pygame.draw.rect(self.screen, color, square)
+            checker_pattern += 1
+            
 
     def run(self):
         """Main loop"""
@@ -46,7 +55,10 @@ class Snake:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
-                    
+
+            self.screen.fill('black')
+            self.draw_background()
+
             keys = pygame.key.get_pressed()
             if keys[pygame.K_z]:
                 print("detected key z")
@@ -58,9 +70,9 @@ class Snake:
             elif keys[pygame.K_d]:
                 self.new_move(Direction.RIGHT)
 
-            self.step()
+            pygame.display.flip()
 
-            print(self)
+            self.step()
 
             time.sleep(0.75)
             
