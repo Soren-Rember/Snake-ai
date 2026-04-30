@@ -11,25 +11,12 @@ class Direction(Enum):
     LEFT = (0, -1)
     RIGHT = (0, +1)
 
-
+# Class for the game
 class Snake:
     def __init__(self) -> None:
-        self.__direction = Direction.UP
+        self.__state = dict()
         self.__dead = False
         self.__position = (0, 0)
-
-    @property
-    def position(self):
-        return self.__position
-    
-    @position.setter
-    def position(self, pos:tuple[int, int]):
-        y, x = pos
-        if y > 0 and y < self.board_size:
-            if x > 0 and x < self.board_size:
-                self.__position = (y, x)
-        else:
-            self.dead = True
 
     def parse_settings(self):
         with open("settings.txt", "r") as settings:
@@ -40,10 +27,11 @@ class Snake:
         self.position = (int(y), int(x))
 
     def init_game(self):
-        y, x = self.position
-
-        self.board = [[0] * self.board_size for _ in range(self.board_size)]
-        self.state = {"board" : self.board, "pos" : self.position}
+        self.__state = {
+            "board": [[0] * self.board_size for _ in range(self.board_size)],
+            "pos": self.position,
+            "apple": None
+        }
         
 
     def __str__(self):
@@ -53,7 +41,7 @@ class Snake:
                 if (y, x) == self.position:
                     board_str += "1"
                 else:
-                    board_str += str(self.board[y][x])
+                    board_str += str(self.__state['board'][y][x])
             board_str += '\n'
         return board_str
 
@@ -78,6 +66,11 @@ class Snake:
         y, x = dir.value
         print("moving")
         self.position = (self.position[0] + y, self.position[1] + x)
+
+# Class for the body parts
+class Head:
+    def __init__(self) -> None:
+        self.queue = list()
 
 
 def main():
