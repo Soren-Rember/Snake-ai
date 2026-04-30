@@ -6,11 +6,19 @@ from head import Head
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 800
 
+INT_ID_TO_MOVE = {
+    1073741906: Direction.UP,
+    1073741905: Direction.DOWN,
+    1073741904: Direction.LEFT,
+    1073741903: Direction.RIGHT
+}
+
 # Class for the game
 class Snake:
     def __init__(self) -> None:
         self.__state = dict()
         self.__snake: list[Head] = []
+        self.__move = Direction.UP
 
         #Pygame init
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -23,7 +31,6 @@ class Snake:
         y, x = lines[1].split(',')
 
         self.__snake = [Head((int(y), int(x)))]
-        self.__board = [[0] * self.board_size for _ in range(self.board_size)]
         self.__apple = None
 
     @property
@@ -51,38 +58,37 @@ class Snake:
     def run(self):
         """Main loop"""
         running = True
+        MOVE_EVENT = pygame.USEREVENT + 1
+        pygame.time.set_timer(MOVE_EVENT, 500)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
+                elif event.type == MOVE_EVENT:
+                    self.step()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key in INT_ID_TO_MOVE:
+                        self.__move = INT_ID_TO_MOVE[event.key]
+
 
             self.screen.fill('black')
             self.draw_background()
-
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_z]:
-                print("detected key z")
-                self.new_move(Direction.UP)
-            elif keys[pygame.K_s]:
-                self.new_move(Direction.DOWN)
-            elif keys[pygame.K_q]:
-                self.new_move(Direction.LEFT)
-            elif keys[pygame.K_d]:
-                self.new_move(Direction.RIGHT)
+            self.draw()
 
             pygame.display.flip()
 
-            self.step()
-
-            time.sleep(0.75)
+            self.clock.tick(60)
             
-    def new_move(self, move: Direction):
-        for head in self.__snake:
-            head.add_move(move)
     
+    def draw(self):
+        for head in self.__snake:
+            position = head.rect
+            self.screen.blit(head.image, position)
+
     def step(self):
         #move every head
         for head in self.__snake:
+            head.add_move(self.__move)
             head.move()
 
 
