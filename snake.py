@@ -3,8 +3,8 @@ import time
 
 from direction import Direction
 from head import Head
-SCREEN_WIDTH = 800
-SCREEN_HEIGHT = 800
+SCREEN_WIDTH = 400
+SCREEN_HEIGHT = 400
 
 INT_ID_TO_MOVE = {
     1073741906: Direction.UP,
@@ -58,8 +58,10 @@ class Snake:
     def run(self):
         """Main loop"""
         running = True
+        ELONGATE_EVENT = pygame.USEREVENT + 2
         MOVE_EVENT = pygame.USEREVENT + 1
         pygame.time.set_timer(MOVE_EVENT, 500)
+        pygame.time.set_timer(ELONGATE_EVENT, 2000)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -69,6 +71,8 @@ class Snake:
                 elif event.type == pygame.KEYDOWN:
                     if event.key in INT_ID_TO_MOVE:
                         self.__move = INT_ID_TO_MOVE[event.key]
+                elif event.type == ELONGATE_EVENT:
+                    self.__snake.append(Head((self.__snake[0].pos[0], self.__snake[0].pos[1])))
 
 
             self.screen.fill('black')
