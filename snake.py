@@ -1,7 +1,7 @@
 import pygame
 import random
 
-from images import HEAD_IMAGES, TAIL_IMAGES, BODY_IMAGES
+from images import *
 
 SCREEN_WIDTH = 400
 SCREEN_HEIGHT = 400
@@ -39,10 +39,10 @@ REVERSED_MOVE = {
 # Class for the game
 class Snake:
     def __init__(self) -> None:
-        self.__state = dict()
-        self.__snake: list[tuple[int, int]] = [(5, 5), (4, 5)]
+        self.__snake: list[tuple[int, int]] = [(4, 5), (5, 5)]
         self.__apple: tuple[int, int] = (0, 0)
         self.__move = "UP"
+
 
         self.apple_image = pygame.image.load("Graphics/apple.png").convert_alpha()
         self.apple_rect = pygame.Surface.get_rect(self.apple_image)
@@ -50,25 +50,11 @@ class Snake:
         #Pygame init
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
         self.clock = pygame.time.Clock()
+        self.dead = False
 
 
     def draw_background(self):
-        width = SCREEN_WIDTH//BOARD_SIZE
-        height = SCREEN_HEIGHT//BOARD_SIZE
-        checker_pattern = 0
-        for y in range(BOARD_SIZE):
-            for x in range(BOARD_SIZE):
-                square = pygame.Rect()
-                square.topleft = (x*width, y*height)
-                square.height = height
-                square.width = width
-                if x % 2 == checker_pattern % 2:
-                    color = "chartreuse3"
-                else:
-                    color = "chartreuse2"
-                pygame.draw.rect(self.screen, color, square)
-            checker_pattern += 1
-            
+        self.screen.blit(BACKGROUND_IMAGE, BACKGROUND_RECT)
 
     def run(self):
         """Main loop"""
@@ -91,6 +77,8 @@ class Snake:
 
             self.screen.fill('black')
             self.draw_background()
+            if self.dead:
+                input()
             self.draw_snake()
             self.draw_apple()
 
@@ -104,7 +92,11 @@ class Snake:
         y, x = self.__snake[0]
         y += delta_y
         x += delta_x
+        if ((y, x) in self.__snake[1:]) or (y < 0 or y>= BOARD_SIZE) or (x < 0 or x>= BOARD_SIZE):
+            print("yep", (y, x) in self.__snake[1:], self.__snake[1:])
+            self.dead = True
         self.__snake.insert(0, (y, x))
+
         if (y, x) != self.__apple:
             self.__snake.pop()
         else:
@@ -145,17 +137,19 @@ class Snake:
         self.apple_rect.centerx = 20 + 40*self.__apple[1]
         self.screen.blit(self.apple_image, self.apple_rect)
 
-    def get_image(self, previous:tuple, actual:tuple, next:tuple):
+    def get_image(self, previous:tuple|None, actual:tuple, next:tuple|None):
         y, x = actual
         
         # HEAD
         if previous is None:
+            assert next is not None
             y -= next[0]
             x -= next[1]
             return HEAD_IMAGES[DELTA_MOVES[(y, x)]]
         
         # TAIL
         elif next is None:
+            assert previous is not None
             y -= previous[0]
             x -= previous[1]
             return TAIL_IMAGES[DELTA_MOVES[(y, x)]]
