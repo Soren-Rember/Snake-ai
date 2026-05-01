@@ -41,7 +41,11 @@ class Snake:
     def __init__(self) -> None:
         self.__state = dict()
         self.__snake: list[tuple[int, int]] = [(5, 5), (4, 5)]
+        self.__apple: tuple[int, int] = (0, 0)
         self.__move = "UP"
+
+        self.apple_image = pygame.image.load("Graphics/apple.png").convert_alpha()
+        self.apple_rect = pygame.Surface.get_rect(self.apple_image)
 
         #Pygame init
         self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
@@ -69,10 +73,8 @@ class Snake:
     def run(self):
         """Main loop"""
         running = True
-        GROW_EVENT = pygame.USEREVENT + 2
         MOVE_EVENT = pygame.USEREVENT + 1
         pygame.time.set_timer(MOVE_EVENT, 500)
-        pygame.time.set_timer(GROW_EVENT, 2000)
         while running:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -81,31 +83,40 @@ class Snake:
                     self.step()
                 elif event.type == pygame.KEYDOWN:
                     if event.key in INT_ID_TO_MOVE:
-                        self.__move = INT_ID_TO_MOVE[event.key]
-                elif event.type == GROW_EVENT:
-                    self.step(grow=True)
+                        move = INT_ID_TO_MOVE[event.key]
+                        if move != REVERSED_MOVE[self.__move]:
+                            self.__move = INT_ID_TO_MOVE[event.key]
 
 
 
             self.screen.fill('black')
             self.draw_background()
             self.draw_snake()
+            self.draw_apple()
 
             pygame.display.flip()
 
             self.clock.tick(60)
         
 
-    def step(self, grow = False):
+    def step(self):
         delta_y, delta_x = MOVE_DELTAS[self.__move]
         y, x = self.__snake[0]
         y += delta_y
         x += delta_x
         self.__snake.insert(0, (y, x))
-        if not grow:
+        if (y, x) != self.__apple:
             self.__snake.pop()
+        else:
+            self.spawn_apple()
 
-    
+    def spawn_apple(self):
+        choice = (random.randint(0, 9), random.randint(0, 9))
+        while choice in self.__snake:
+            choice = (random.randint(0, 9), random.randint(0, 9))
+        self.__apple = choice 
+
+
     def draw_snake(self):
         for i in range(len(self.__snake)):
             if i == 0:
@@ -129,6 +140,10 @@ class Snake:
 
             self.screen.blit(part, part_rect)
 
+    def draw_apple(self):
+        self.apple_rect.centery = 20 + 40*self.__apple[0]
+        self.apple_rect.centerx = 20 + 40*self.__apple[1]
+        self.screen.blit(self.apple_image, self.apple_rect)
 
     def get_image(self, previous:tuple, actual:tuple, next:tuple):
         y, x = actual
