@@ -2,12 +2,12 @@ import pygame
 from direction import Direction
 pygame.display.set_mode((400, 400))
 
-body_bottomleft = pygame.image.load("Graphics/body_bottomleft.png").convert_alpha()
-body_bottomright = pygame.image.load("Graphics/body_bottomright.png").convert_alpha()
-body_horizontal = pygame.image.load("Graphics/body_horizonal.png").convert_alpha()
-body_topleft = pygame.image.load("Graphics/body_topleft.png").convert_alpha()
-body_topright = pygame.image.load("Graphics/body_topright.png").convert_alpha()
-body_vertical = pygame.image.load("Graphics/body_vertical.png").convert_alpha()
+body_bottomleft = pygame.image.load("/home/soren/Projects/snake_ai/Graphics/body_bottomleft.png").convert_alpha()
+body_bottomright = pygame.image.load("/home/soren/Projects/snake_ai/Graphics/body_bottomright.png").convert_alpha()
+body_horizontal = pygame.image.load("/home/soren/Projects/snake_ai/Graphics/body_horizontal.png").convert_alpha()
+body_topleft = pygame.image.load("/home/soren/Projects/snake_ai/Graphics/body_topleft.png").convert_alpha()
+body_topright = pygame.image.load("/home/soren/Projects/snake_ai/Graphics/body_topright.png").convert_alpha()
+body_vertical = pygame.image.load("/home/soren/Projects/snake_ai/Graphics/body_vertical.png").convert_alpha()
 
 
 MOVE_TO_IMAGE = {

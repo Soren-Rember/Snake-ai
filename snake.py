@@ -30,12 +30,16 @@ class Snake:
         self.board_size = int(lines[0])
         y, x = lines[1].split(',')
 
-        self.__snake = [Head((int(y), int(x)))]
+        self.__snake = [Head((5,5)), Head((4,5))]
         self.__apple = None
 
     @property
     def head(self):
         return self.__snake[0]
+    
+    @property
+    def tail(self):
+        return self.__snake[-1]
 
     def draw_background(self):
         width = SCREEN_WIDTH//self.board_size
@@ -72,7 +76,7 @@ class Snake:
                     if event.key in INT_ID_TO_MOVE:
                         self.__move = INT_ID_TO_MOVE[event.key]
                 elif event.type == ELONGATE_EVENT:
-                    self.__snake.append(Head((self.__snake[0].pos[0], self.__snake[0].pos[1])))
+                    self.step(False)
 
 
             self.screen.fill('black')
@@ -89,12 +93,15 @@ class Snake:
             position = head.rect
             self.screen.blit(head.image, position)
 
-    def step(self):
+    def step(self, pop = True):
         #move every head
-        for head in self.__snake:
-            head.add_move(self.__move)
-            head.move()
-
+        y, x = self.__snake[0].pos
+        delta_y, delta_x = self.__snake[0].dir.value
+        y += delta_y
+        x += delta_x
+        self.__snake.insert(0, Head(position=(y, x), move=self.__move))
+        if pop:
+            self.__snake.pop()
 
 def main():
     pygame.init()
