@@ -29,6 +29,13 @@ DELTA_MOVES = {
     (0, 1): "RIGHT" 
 }
 
+REVERSED_MOVE = {
+    "UP": "DOWN",
+    "DOWN": "UP",
+    "LEFT": "RIGHT",
+    "RIGHT": "LEFT"
+}
+
 # Class for the game
 class Snake:
     def __init__(self) -> None:
@@ -75,6 +82,8 @@ class Snake:
                 elif event.type == pygame.KEYDOWN:
                     if event.key in INT_ID_TO_MOVE:
                         self.__move = INT_ID_TO_MOVE[event.key]
+                elif event.type == GROW_EVENT:
+                    self.step(grow=True)
 
 
 
@@ -85,16 +94,16 @@ class Snake:
             pygame.display.flip()
 
             self.clock.tick(60)
-            
+        
 
-    def step(self):
+    def step(self, grow = False):
         delta_y, delta_x = MOVE_DELTAS[self.__move]
-        print(self.__snake)
         y, x = self.__snake[0]
         y += delta_y
         x += delta_x
         self.__snake.insert(0, (y, x))
-        self.__snake.pop()
+        if not grow:
+            self.__snake.pop()
 
     
     def draw_snake(self):
@@ -113,6 +122,9 @@ class Snake:
 
             else:
                 part = self.get_image(self.__snake[i-1], self.__snake[i], self.__snake[i+1])
+                part_rect = pygame.Surface.get_rect(part)
+                part_rect.centery = 20 + 40* self.__snake[i][0]
+                part_rect.centerx = 20 + 40* self.__snake[i][1]
 
 
             self.screen.blit(part, part_rect)
@@ -134,8 +146,13 @@ class Snake:
             return TAIL_IMAGES[DELTA_MOVES[(y, x)]]
         
         else:
-            pass
-        
+            y = previous[0] - actual[0]
+            x = previous[1] - actual[1]
+            previous_move = (y, x)
+            y = actual[0] - next[0]
+            x = actual[1] - next[1]
+            next_move = (y, x)
+            return BODY_IMAGES[DELTA_MOVES[next_move]][DELTA_MOVES[previous_move]]
 
             
 

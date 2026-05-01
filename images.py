@@ -16,5 +16,24 @@ TAIL_IMAGES = {
 }
 
 BODY_IMAGES = {
-    
+    "UP": {
+        "UP": pygame.image.load("Graphics/body_vertical.png").convert_alpha(),
+        "LEFT": pygame.image.load("Graphics/body_bottomleft.png").convert_alpha(),
+        "RIGHT": pygame.image.load("Graphics/body_bottomright.png").convert_alpha()
+    },
+    "DOWN": {
+        "DOWN": pygame.image.load("Graphics/body_vertical.png").convert_alpha(),
+        "LEFT": pygame.image.load("Graphics/body_topleft.png").convert_alpha(),
+        "RIGHT": pygame.image.load("Graphics/body_topright.png").convert_alpha()        
+    },
+    "LEFT": {
+        "UP": pygame.image.load("Graphics/body_topright.png").convert_alpha(),
+        "DOWN": pygame.image.load("Graphics/body_bottomright.png").convert_alpha(),
+        "LEFT": pygame.image.load("Graphics/body_horizontal.png").convert_alpha()
+    },
+    "RIGHT": {
+        "UP": pygame.image.load("Graphics/body_topleft.png").convert_alpha(),
+        "DOWN": pygame.image.load("Graphics/body_bottomleft.png").convert_alpha(),
+        "RIGHT": pygame.image.load("Graphics/body_horizontal.png").convert_alpha()        
+    }
 }
